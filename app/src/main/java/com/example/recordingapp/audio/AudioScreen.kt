@@ -4,30 +4,27 @@ import android.Manifest
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScaffoldDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.recordingapp.ui.theme.RecordingAppTheme
 
 @Composable
-fun AudioScreen (modifier: Modifier, audioViewModel: AudioViewModel = viewModel()) {
+fun AudioScreen (audioViewModel: AudioViewModel = viewModel()) {
     val uiState by audioViewModel.uiState.collectAsState()
 
     val context = LocalContext.current
@@ -44,33 +41,31 @@ fun AudioScreen (modifier: Modifier, audioViewModel: AudioViewModel = viewModel(
         audioViewModel.onPermissionResult(granted)
     }
 
-    RecordingAppTheme {
-        Column(
-            modifier = modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+    Column(
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(
+            onClick = {
+                audioViewModel.toggleRecording(
+                    hasPermission = hasRecordPermission(),
+                    requestPermission = { permissionLauncher.launch(Manifest.permission.RECORD_AUDIO) }
+                )
+            }
         ) {
-            Button(
-                onClick = {
-                    audioViewModel.toggleRecording(
-                        hasPermission = hasRecordPermission(),
-                        requestPermission = { permissionLauncher.launch(Manifest.permission.RECORD_AUDIO) }
-                    )
-                }
-            ) {
-                Text(if (uiState.isRecording) "Stop recording" else "Start recording")
-            }
+            Text(if (uiState.isRecording) "Stop recording" else "Start recording")
+        }
 
-            Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
-            Button(
-                enabled = !uiState.isRecording,
-                onClick = {
-                    audioViewModel.togglePlayback()
-                }
-            ) {
-                Text(if (uiState.isPlaying) "Stop playing" else "Play recording")
+        Button(
+            enabled = !uiState.isRecording,
+            onClick = {
+                audioViewModel.togglePlayback()
             }
+        ) {
+            Text(if (uiState.isPlaying) "Stop playing" else "Play recording")
         }
     }
 }
