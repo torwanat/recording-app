@@ -45,7 +45,6 @@ fun GalleryScreen(onNavigateToImage: () -> Unit, galleryViewModel: GalleryViewMo
         topBar = {
             Row(
                 Modifier
-                    .padding(bottom = 10.dp)
                     .background(MaterialTheme.colorScheme.primaryContainer)
                     .fillMaxWidth()
                     .height(50.dp),
@@ -66,7 +65,8 @@ fun GalleryScreen(onNavigateToImage: () -> Unit, galleryViewModel: GalleryViewMo
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues),
+                        .padding(paddingValues)
+                        .background(MaterialTheme.colorScheme.primaryContainer),
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator()
@@ -76,7 +76,8 @@ fun GalleryScreen(onNavigateToImage: () -> Unit, galleryViewModel: GalleryViewMo
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues),
+                        .padding(paddingValues)
+                        .background(MaterialTheme.colorScheme.primaryContainer),
                     contentAlignment = Alignment.Center
                 ) {
                     Text("No photos taken yet")
@@ -84,7 +85,10 @@ fun GalleryScreen(onNavigateToImage: () -> Unit, galleryViewModel: GalleryViewMo
             }
             else -> {
                 LazyColumn(
-                    modifier = Modifier.padding(paddingValues),
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .fillMaxSize(),
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -128,7 +132,7 @@ fun PhotoCard(photo: Photo) {
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault())
+                    text = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
                         .format(photo.dateTaken),
                     style = MaterialTheme.typography.bodySmall
                 )
