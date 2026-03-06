@@ -47,6 +47,7 @@ fun AudioScreen (audioViewModel: AudioViewModel = viewModel()) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
+            enabled = !uiState.isPlaying,
             onClick = {
                 audioViewModel.toggleRecording(
                     hasPermission = hasRecordPermission(),
