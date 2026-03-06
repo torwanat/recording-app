@@ -2,6 +2,7 @@ package com.example.recordingapp.image
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.view.PreviewView
@@ -102,10 +103,13 @@ fun ImageScreen(onNavigateToAudio: () -> Unit, imageViewModel: ImageViewModel = 
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(onClick = {
-                imageCaptureHelper?.takePhoto { path ->
-                    imageViewModel.onPhotoTaken(path)
-                }
+            Button(
+                enabled = !uiState.permissionDenied,
+                onClick = {
+                    imageCaptureHelper?.takePhoto { path ->
+                        imageViewModel.onPhotoTaken(path)
+                    }
+                    Toast.makeText(context, "Photo taken", Toast.LENGTH_SHORT).show()
             }) {
                 Text("Take photo")
             }
@@ -116,9 +120,18 @@ fun ImageScreen(onNavigateToAudio: () -> Unit, imageViewModel: ImageViewModel = 
                 Text("Back to audio")
             }
 
-            uiState.lastSavedPhotoPath?.let { path ->
-                Spacer(modifier = Modifier.height(8.dp))
-                Text("Last saved photo: $path")
+            if (uiState.permissionDenied) {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text("Camera permission denied")
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(onClick = {
+                    cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                }) {
+                    Text("Grant permission")
+                }
             }
         }
     }
