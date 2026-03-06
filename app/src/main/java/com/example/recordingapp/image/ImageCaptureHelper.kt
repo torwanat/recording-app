@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Locale
+import java.util.UUID
 
 class ImageCaptureHelper (private val context: Context, private val previewView: PreviewView) {
     private var cameraProvider: ProcessCameraProvider? = null
@@ -40,13 +41,12 @@ class ImageCaptureHelper (private val context: Context, private val previewView:
     }
 
     fun takePhoto(onSuccess: (String) -> Unit) {
-        val capture = imageCapture ?: return
-
+        val ic = imageCapture ?: return
         val name = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS", Locale.US)
             .format(System.currentTimeMillis())
 
         val contentValues = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, "IMG_$name")
+            put(MediaStore.MediaColumns.DISPLAY_NAME, "IMG_${name}_${UUID.randomUUID()}.jpg")
             put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
         }
 
@@ -56,7 +56,7 @@ class ImageCaptureHelper (private val context: Context, private val previewView:
             contentValues
         ).build()
 
-        capture.takePicture(
+        ic.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(context),
             object : ImageCapture.OnImageSavedCallback {
