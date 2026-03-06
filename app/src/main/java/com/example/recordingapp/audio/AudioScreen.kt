@@ -24,7 +24,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
-fun AudioScreen (audioViewModel: AudioViewModel = viewModel()) {
+fun AudioScreen (onNavigateToVideo: () -> Unit, audioViewModel: AudioViewModel = viewModel()) {
     val uiState by audioViewModel.uiState.collectAsState()
 
     val context = LocalContext.current
@@ -67,6 +67,16 @@ fun AudioScreen (audioViewModel: AudioViewModel = viewModel()) {
             }
         ) {
             Text(if (uiState.isPlaying) "Stop playing" else "Play recording")
+        }
+
+        Spacer(modifier = Modifier.height(128.dp))
+
+        Button(
+            onClick = {
+                onNavigateToVideo()
+            }
+        ) {
+            Text("Switch to camera")
         }
     }
 }
