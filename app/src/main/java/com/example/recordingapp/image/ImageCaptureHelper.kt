@@ -42,12 +42,13 @@ class ImageCaptureHelper (private val context: Context, private val previewView:
 
     fun takePhoto(onSuccess: (String) -> Unit) {
         val ic = imageCapture ?: return
-        val name = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS", Locale.US)
+        val name = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS", Locale.getDefault())
             .format(System.currentTimeMillis())
 
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, "IMG_${name}_${UUID.randomUUID()}.jpg")
             put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/RecorderApp")
         }
 
         val outputOptions = ImageCapture.OutputFileOptions.Builder(

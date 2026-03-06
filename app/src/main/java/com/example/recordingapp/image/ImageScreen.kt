@@ -35,7 +35,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun ImageScreen(onNavigateToAudio: () -> Unit, imageViewModel: ImageViewModel = viewModel()) {
+fun ImageScreen(onNavigateToAudio: () -> Unit, onNavigateToGallery: () -> Unit, imageViewModel: ImageViewModel = viewModel()) {
     val uiState by imageViewModel.uiState.collectAsState()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -118,6 +118,10 @@ fun ImageScreen(onNavigateToAudio: () -> Unit, imageViewModel: ImageViewModel = 
 
             Button(onClick = onNavigateToAudio) {
                 Text("Back to audio")
+            }
+
+            Button(onClick = onNavigateToGallery) {
+                Text("Gallery")
             }
 
             if (uiState.permissionDenied) {
