@@ -32,7 +32,7 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 projection,
                 "${MediaStore.Images.Media.RELATIVE_PATH} LIKE ?",
-                arrayOf("%RecorderApp%"),
+                arrayOf("%RecordingApp%"),
                 "${MediaStore.Images.Media.DATE_TAKEN} DESC"
             )
 
@@ -64,7 +64,18 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
                 isLoading = false
             )
         }
+    }
 
+    fun deletePhoto(photo: Photo) {
+        val resolver = getApplication<Application>().contentResolver
+        val uri = photo.uri
+
+        val deleted = resolver.delete(uri, null, null)
+        if (deleted > 0) {
+            _uiState.value = _uiState.value.copy(
+                photos = _uiState.value.photos.filter { it.uri != uri }
+            )
+        }
     }
 }
 

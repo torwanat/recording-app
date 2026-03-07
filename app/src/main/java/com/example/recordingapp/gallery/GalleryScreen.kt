@@ -93,7 +93,10 @@ fun GalleryScreen(onNavigateToImage: () -> Unit, galleryViewModel: GalleryViewMo
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(uiState.photos, key = { it.uri }) { photo ->
-                        PhotoCard(photo)
+                        PhotoCard(
+                            photo,
+                            onDelete = { galleryViewModel.deletePhoto(photo) }
+                        )
                     }
                 }
             }
@@ -102,7 +105,7 @@ fun GalleryScreen(onNavigateToImage: () -> Unit, galleryViewModel: GalleryViewMo
 }
 
 @Composable
-fun PhotoCard(photo: Photo) {
+fun PhotoCard(photo: Photo, onDelete: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -126,7 +129,7 @@ fun PhotoCard(photo: Photo) {
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            Column(modifier = Modifier.weight(1f)) {
+            Column {
                 Text(
                     text = photo.displayName,
                     style = MaterialTheme.typography.titleMedium
@@ -136,6 +139,11 @@ fun PhotoCard(photo: Photo) {
                         .format(photo.dateTaken),
                     style = MaterialTheme.typography.bodySmall
                 )
+                Button(
+                    onClick = onDelete
+                ) {
+                    Text("Delete")
+                }
             }
         }
     }
