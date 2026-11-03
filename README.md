@@ -53,6 +53,7 @@ The **Gallery** screen:
 | Audio | `MediaRecorder` and `MediaPlayer` |
 | Image loading | Coil Compose |
 | Build system | Gradle Kotlin DSL |
+| CI/CD | GitHub Actions |
 
 ## Project structure
 
@@ -144,6 +145,43 @@ Audio → Image → Gallery
 - **Image** is reached from the Audio screen.
 - **Gallery** is reached from the Image screen.
 - Back navigation returns to the previous screen.
+
+## CI builds
+
+The **Build APK** workflow runs on every push to `main`, every pull request targeting `main`, and manually through `workflow_dispatch`.
+
+It builds a debug APK and uploads it as a temporary GitHub Actions artifact named `recording-app-debug-apk`. These artifacts are intended for development and testing; they are not permanent releases.
+
+## Releases
+
+Release APKs are published through the **Publish APK release** workflow.
+
+To create a release:
+
+1. Update `versionCode` and `versionName` in `app/build.gradle.kts` when appropriate.
+2. Commit and push the changes to `main`.
+3. Create and push a version tag:
+
+   ```bash
+   git tag v1.0.0
+   git push origin v1.0.0
+   ```
+
+4. GitHub Actions builds a signed release APK using `./gradlew assembleRelease`.
+5. The APK is attached automatically to the corresponding GitHub Release, together with automatically generated release notes.
+
+Release tags must follow the `v*` pattern, for example `v1.0.0`, `v1.1.0`, or `v2.0.0`.
+
+### Signed release builds
+
+Release APKs are signed during CI using GitHub Actions secrets:
+
+- `ANDROID_KEYSTORE_BASE64`
+- `ANDROID_KEYSTORE_PASSWORD`
+- `ANDROID_KEY_ALIAS`
+- `ANDROID_KEY_PASSWORD`
+
+The keystore and its credentials are never stored in the repository. The signing configuration is applied only when these environment variables are available, so local debug development remains unaffected.
 
 ## Notes and possible improvements
 
